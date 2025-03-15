@@ -1,0 +1,37 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+        types: [python]
+      - id: end-of-file-fixer
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.11.0
+    hooks:
+      - id: ruff
+        args: [--fix, --select=I]
+        stages: [pre-commit]
+
+      - id: ruff-format
+        stages: [pre-commit]
+
+      - id: ruff
+        name: ruff-check
+        args: [--select=I]
+        stages: [manual]
+
+      - id: ruff-format
+        name: ruff-format-check
+        args: [--diff]
+        stages: [manual]
+
+  - repo: local
+    hooks:
+      - id: mypy
+        stages: [pre-commit]
+        name: mypy
+        entry: mypy
+        language: system
+        types: [python]
+        require_serial: true
