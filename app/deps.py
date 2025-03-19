@@ -16,7 +16,7 @@ async def get_database(
         await conn.set_type_codec(
             "jsonb",
             encoder=lambda *args, **kwargs: orjson.dumps(*args, **kwargs).decode(),
-            decoder=lambda *args, **kwargs: orjson.loads(*args, **kwargs).decode(),
+            decoder=orjson.loads,
             schema="pg_catalog",
         )
         yield conn
