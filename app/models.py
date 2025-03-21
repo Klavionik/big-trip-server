@@ -42,11 +42,4 @@ class Event(EventCreate):
 
 
 class SyncResult(BaseModel):
-    class UpdatedEvent(BaseModel):
-        class Payload(BaseModel):
-            point: Event
-
-        success: bool
-        payload: Payload
-
-    updated: list[UpdatedEvent]
+    updated: list[Event]

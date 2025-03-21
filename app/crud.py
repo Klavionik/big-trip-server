@@ -60,17 +60,10 @@ async def sync_events(events: list[Event], conn: Connection) -> SyncResult:
     result = SyncResult(updated=[])
 
     for event in events:
-        success = False
-
         try:
             await update_event(event.id, event, conn)
-            success = True
+            result.updated.append(event)
         except asyncpg.exceptions.PostgresError:
             pass
-
-        updated_event = SyncResult.UpdatedEvent(
-            success=success, payload=SyncResult.UpdatedEvent.Payload(point=event)
-        )
-        result.updated.append(updated_event)
 
     return result
