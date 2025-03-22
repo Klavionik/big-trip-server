@@ -1,18 +1,14 @@
 from collections.abc import AsyncIterator
 
 import orjson
-from asyncpg import Connection, connect
-from fastapi import Depends
-
-from app.config import Config, get_config
+from asyncpg import Connection
+from fastapi import Request
 
 
 async def get_database(
-    config: Config = Depends(get_config),
+    request: Request,
 ) -> AsyncIterator[Connection]:
-    conn = await connect(str(config.DB_DSN))
-
-    try:
+    async with request.state.db_pool.acquire() as conn:
         await conn.set_type_codec(
             "jsonb",
             encoder=lambda *args, **kwargs: orjson.dumps(*args, **kwargs).decode(),
@@ -20,5 +16,3 @@ async def get_database(
             schema="pg_catalog",
         )
         yield conn
-    finally:
-        await conn.close()
